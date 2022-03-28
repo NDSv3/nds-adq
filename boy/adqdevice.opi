@@ -94,13 +94,24 @@
     <foreground_color>
       <color name="IO OutputPV Fg" red="0" green="0" blue="0" />
     </foreground_color>
-    <height>35</height>
+    <height>32</height>
     <items>
-      <s>ADQ-05711</s>
+      <s>SPD-A-06009</s>
+      <s>SPD-B-06010</s>
+      <s>SPD-C-06012</s>
+      <s>SPD-D-06013</s>
+      <s>SPD-E-06014</s>
+      <s>SPD-F-06015</s>
+      <s>SPD-G-06016</s>
+      <s>SPD-H-06017</s>
+      <s>SPD-I-06018</s>
+      <s>SPD-J-06019</s>
+      <s>SPD-K-06020</s>
+      <s>SPD-L-06021</s>
     </items>
     <items_from_pv>false</items_from_pv>
     <name>Device prefix combo</name>
-    <pv_name>loc://ADQSerialNumber("ADQ-05711")</pv_name>
+    <pv_name>loc://ADQSerialNumber("SPD-A-06009")</pv_name>
     <pv_value />
     <rules />
     <scale_options>
@@ -113,7 +124,7 @@
 			$(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Combo Box</widget_type>
-    <width>124</width>
+    <width>144</width>
     <wuid>-7f2ef3b6:163491e820d:-7a31</wuid>
     <x>1427</x>
     <y>22</y>
@@ -198,17 +209,17 @@
     </scale_options>
     <scripts />
     <show_units>true</show_units>
-    <text>######</text>
+    <text>#########</text>
     <tooltip>$(pv_name)
 			$(pv_value)</tooltip>
     <transparent>false</transparent>
     <vertical_alignment>1</vertical_alignment>
     <visible>true</visible>
     <widget_type>Text Update</widget_type>
-    <width>124</width>
+    <width>149</width>
     <wrap_words>false</wrap_words>
     <wuid>-1be97059:1634dc4c0e7:-7b13</wuid>
-    <x>1550</x>
+    <x>1570</x>
     <y>22</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0.0">
@@ -256,7 +267,7 @@
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts>
-      <path pathString="../macros/SerialNumber_macro.js" checkConnect="true" sfe="false" seoe="false">
+      <path pathString="../Macros/SerialNumber_macro.js" checkConnect="true" sfe="false" seoe="false">
         <pv trig="true">loc://ADQSerialNumber</pv>
       </path>
     </scripts>

@@ -24,16 +24,10 @@ public:
      * @brief ADQInfo class constructor.
      * @param name a name with which this class will register its child node.
      * @param parentNode a name of a parent node to which this class' node is a child.
-     * @param adqInterface a pointer to the ADQ API interface created in the ADQInit class.
-     * @param adqCtrlUnit a pointer to the ADQ control unit that sets up and controls the ADQ devices.
+     * @param adqInterface a pointer to the ADQ API interface created in the ADQDevice class.
      */
-    ADQInfo(const std::string& name, nds::Node& parentNode, ADQInterface*& adqInterface, void* adqCtrlUnit);
+    ADQInfo(const std::string& name, nds::Node& parentNode, ADQInterface* adqInterface);
     virtual ~ADQInfo();
-
-    /** @var m_node
-     * @brief ADQInfo class node that connects to the device.
-     */
-    nds::Port m_node;
 
     /** @fn getProductName
      * @brief Gets the digitizer's product name.
@@ -60,6 +54,11 @@ public:
      */
     void getCardOption(timespec* pTimestamp, std::string* pValue);
 
+    /** @fn isAlive
+     * @brief Is the digitiser operational and connected?
+     */
+    void isAlive(timespec* pTimestamp, int32_t* pValue);
+
     /** @fn getTempLocal
      * @brief Gets the digitizer's PCB temperature.
      */
@@ -80,10 +79,25 @@ public:
      */
     void getTempFPGA(timespec* pTimestamp, int32_t* pValue);
 
-    /** @fn getTempDd
+    /** @fn getTempDCDC2A
      * @brief Gets the digitizer's DCDC2A temperature.
      */
-    void getTempDd(timespec* pTimestamp, int32_t* pValue);
+    void getTempDCDC2A(timespec* pTimestamp, int32_t* pValue);
+
+    /** @fn getTempDCDC2B
+     * @brief Gets the digitizer's DCDC2A temperature.
+     */
+    void getTempDCDC2B(timespec* pTimestamp, int32_t* pValue);
+
+    /** @fn getTempDCDC2B
+     * @brief Gets the digitizer's DCDC2A temperature.
+     */
+    void getTempDCDC1(timespec* pTimestamp, int32_t* pValue);
+
+    /** @fn getTempDCDC2B
+     * @brief Gets the digitizer's DCDC2A temperature.
+     */
+    void getTempRSVD(timespec* pTimestamp, int32_t* pValue);
 
     /** @fn getSampRate
      * @brief Gets the digitizer's base sample rate.
@@ -121,27 +135,33 @@ public:
     void getPCIeLinkWid(timespec* pTimestamp, int32_t* pValue);
 
 private:
-    ADQInterface* m_adqInterface;
-
-    void* m_adqCtrlUnit;
-
     std::string m_productName;
     nds::PVDelegateIn<std::string> m_productNamePV;
     nds::PVDelegateIn<std::string> m_serialNumberPV;
     nds::PVDelegateIn<int32_t> m_productIDPV;
     nds::PVDelegateIn<int32_t> m_adqTypePV;
     nds::PVDelegateIn<std::string> m_cardOptionPV;
+    nds::PVDelegateIn<int32_t> m_isAlivePV;
+    int32_t m_isAlive;
     nds::PVDelegateIn<int32_t> m_tempLocalPV;
     nds::PVDelegateIn<int32_t> m_tempAdcOnePV;
     nds::PVDelegateIn<int32_t> m_tempAdcTwoPV;
     nds::PVDelegateIn<int32_t> m_tempFpgaPV;
-    nds::PVDelegateIn<int32_t> m_tempDiodPV;
+    nds::PVDelegateIn<int32_t> m_tempDCDC2APV;
+    nds::PVDelegateIn<int32_t> m_tempDCDC2BPV;
+    nds::PVDelegateIn<int32_t> m_tempDCDC1PV;
+    nds::PVDelegateIn<int32_t> m_tempRSVDPV;
     nds::PVDelegateIn<double> m_sampRatePV;
     nds::PVDelegateIn<int32_t> m_bytesPerSampPV;
     nds::PVDelegateIn<int32_t> m_busTypePV;
     nds::PVDelegateIn<int32_t> m_busAddrPV;
     nds::PVDelegateIn<int32_t> m_pcieLinkRatePV;
     nds::PVDelegateIn<int32_t> m_pcieLinkWidPV;
+
+    /** @var m_node
+     * @brief ADQInfo class child node that connects to the root node.
+     */
+    nds::Port m_node;
 
 protected:
     /** @var m_adqDevMutex
@@ -151,6 +171,8 @@ protected:
     * For example, updating the temperatures (ADQInfo class) and data acquisition (ADQAIChannelGroup).
     */
     std::mutex m_adqDevMutex;
+
+    ADQInterface* m_adqInterface;
 
     /** @var m_sampRateDecPV
     * @brief PV fpr sample rate with decimation.

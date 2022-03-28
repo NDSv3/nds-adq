@@ -19,14 +19,10 @@ adq-test_DBD += base.dbd
 adq-test_DBD += adq-testInclude.dbd
 
 # Add all the support libraries needed by this IOC
-PROD_LIBS += nds3 nds3epics asyn
-
-# NDS3 can be found here
-nds3_DIR = $(NDS3)
-
-# Where to find ADQ driver and enforce linking
-adq_DIR += $(ADQ)
-adq-test_LDFLAGS += -Wl,--no-as-needed -ladq -lnds3 
+PROD_LIBS += nds3-epics asyn
+PROD_LIBS_WIN32 += nds3
+PROD_SYS_LIBS_Linux += nds3
+adq-test_LDFLAGS_Linux += -Wl,--no-as-needed -ladq -lnds3 
 
 # adq-test_registerRecordDeviceDriver.cpp derives from adq-test.dbd
 adq-test_SRCS += adq-test_registerRecordDeviceDriver.cpp

@@ -6,7 +6,7 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install)
 # databases, templates, substitutions like this
-DB += tspd-adq.db
+DB += ADQInfo.template ADQAIChannelGroup.template ADQAIChannel.template tspd-adq.substitutions4 tspd-adq.substitutions8 ADQMessageLog.template
 
 include $(TOP)/configure/RULES
 #----------------------------------------
