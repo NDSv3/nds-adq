@@ -14,9 +14,9 @@ record(waveform, "${PREFIX}-${ADQSN}:${GRP}:LOG") {
     field(NELM, "512")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt8ArrayIn")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) LogMsg")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) LogMsg")
     field(PINI, "YES")
-	field(FLNK, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG05")
+    field(FLNK, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG05")
 }
 
 record(waveform, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG01")
@@ -32,8 +32,8 @@ record(waveform, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG02")
     field(DESC, "Message log history")
     field(FTVL, "CHAR")
     field(NELM, "512")
-    field(FLNK, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG01")	
-    field(INP, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG01")	
+    field(FLNK, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG01")
+    field(INP, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG01")
 }
 
 record(waveform, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG03")
@@ -41,8 +41,8 @@ record(waveform, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG03")
     field(DESC, "Message log history")
     field(FTVL, "CHAR")
     field(NELM, "512")
-    field(FLNK, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG02")	
-    field(INP, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG02")	
+    field(FLNK, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG02")
+    field(INP, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG02")
 }
 
 record(waveform, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG04")
@@ -50,8 +50,8 @@ record(waveform, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG04")
     field(DESC, "Message log history")
     field(FTVL, "CHAR")
     field(NELM, "512")
-    field(FLNK, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG03")	
-    field(INP, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG03")	
+    field(FLNK, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG03")
+    field(INP, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG03")
 }
 
 record(waveform, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG05")
@@ -59,6 +59,6 @@ record(waveform, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG05")
     field(DESC, "Message log history")
     field(FTVL, "CHAR")
     field(NELM, "512")
-    field(FLNK, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG04")	
-    field(INP, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG04")	
+    field(FLNK, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG04")
+    field(INP, "${PREFIX}-${ADQSN}:${GRP}:LOG:MSG04")
 }

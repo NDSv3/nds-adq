@@ -10,7 +10,10 @@
 #include <iostream>
 #include <nds3/nds.h>
 #include <sstream>
+
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 /** @file ADQDefinition.h
  * @brief This file contains global objects (constants and macros).
@@ -50,12 +53,22 @@
  /** @def TEMP_DIOD
  * @brief Digitizer's device address of DCDC2A.
  */
-#define TEMP_DIOD 4
+#define TEMP_DCDC2A 4
 
-/** @def DATA_MAX_ELEMENTS
- * @brief Maximum number of elements for data PV.
+ /** @def DCDC2B
+ * @brief Digitizer's device address of DCDC2B.
  */
-#define DATA_MAX_ELEMENTS (4 * 1024 * 1024)
+#define TEMP_DCDC2B 5
+
+ /** @def TEMP_DCDC1
+ * @brief Digitizer's device address of DCDC1.
+ */
+#define TEMP_DCDC1 6
+
+ /** @def TEMP_RSVD
+ * @brief Digitizer's device address of RSVD.
+ */
+#define TEMP_RSVD 7
 
  /** @def BUFFERSIZE_ADQ14
  * @brief Buffersize for data acquisition (ADQ14).
@@ -66,6 +79,11 @@
  * @brief Buffersize for data acquisition (ADQ7).
  */
 #define BUFFERSIZE_ADQ7 (256 * 1024)
+
+ /** @def BUFFERSIZE_ADQ8
+ * @brief Buffersize for data acquisition (ADQ8).
+ */
+#define BUFFERSIZE_ADQ8 (512 * 1024)
 
 /** @def CHANNEL_COUNT_MAX
  * @brief Maximum allowed amount of channels.
@@ -85,21 +103,27 @@
 /** @def GROUP_CHAN_DEVICE
  * @brief Append the string to ADQAIChannelGroup node name.
  */
-#define GROUP_CHAN_DEVICE "-ChGrp"
+#define GROUP_CHAN_DEVICE ":COM"
 
 /** @def INFO_DEVICE
  * @brief Append the string to ADQDevice node name.
  */
-#define INFO_DEVICE "-Info"
+#define INFO_DEVICE ":INFO"
 
 /** @def SLEEP(interval)
  * @brief Macro for sleeping for \a 1000*interval microseconds.
  * @param interval value that will be multiplied by 1000 microseconds.
  */
+#ifndef _WIN32
 #define SLEEP(interval) usleep(1000 * interval)
+#else
+static void SLEEP(DWORD MilliSeconds) {
+    Sleep(MilliSeconds);
+}
+#endif
 
 /** @def MIN(a, b)
- * @brief A macro that returns the minimum of \a a and \a b.
+ * @brief A macro that returns the minumim of \a a and \a b.
  */
 #define MIN(a, b) ((a) > (b) ? (b) : (a))
 
@@ -108,54 +132,5 @@
  */
 #define UNUSED(x) (void)x
 
-/** @def ADQNDS_MSG_INFOLOG_PV(text)
- * @brief Macro for pushing log messages to PV. Used in ADQAIChannelGroup methods.
- * @param text input information message.
- */
-#define ADQNDS_MSG_INFOLOG_PV(text)                              \
-    do                                                           \
-    {                                                            \
-        struct timespec now = { 0, 0 };                          \
-        clock_gettime(CLOCK_REALTIME, &now);                     \
-        m_logMsgPV.push(now, std::string(text));                 \
-        ndsInfoStream(m_node) << std::string(text) << std::endl; \
-    } while (0)
-
-/** @def ADQNDS_MSG_ERRLOG_PV_GOTO_FINISH
- * @brief Macro for informing the user about occurred major failures and
- * stopping data acquisition. Used in ADQAIChannelGroup methods.
- * @param status status of the function that calls this macro.
- * @param text input information message.
- */
-#define ADQNDS_MSG_ERRLOG_PV_GOTO_FINISH(status, text)                \
-    do                                                                \
-    {                                                                 \
-        if (!status)                                                  \
-        {                                                             \
-            struct timespec now = { 0, 0 };                           \
-            clock_gettime(CLOCK_REALTIME, &now);                      \
-            m_logMsgPV.push(now, std::string(text));                  \
-            ndsErrorStream(m_node) << std::string(text) << std::endl; \
-            goto finish;                                              \
-        }                                                             \
-    } while (0)
-
-/** @def ADQNDS_MSG_WARNLOG_PV
- * @brief Macro for warning information in case of minor failures.
- * Used in ADQAIChannelGroup methods.
- * @param status status of the function that calls this macro.
- * @param text input information message.
- */
-#define ADQNDS_MSG_WARNLOG_PV(status, text)                             \
-    do                                                                  \
-    {                                                                   \
-        if (!status)                                                    \
-        {                                                               \
-            struct timespec now = { 0, 0 };                             \
-            clock_gettime(CLOCK_REALTIME, &now);                        \
-            m_logMsgPV.push(now, std::string(text));                    \
-            ndsWarningStream(m_node) << std::string(text) << std::endl; \
-        }                                                               \
-    } while (0)
 
 #endif /* ADQDEFINITION_H */

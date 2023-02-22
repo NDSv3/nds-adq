@@ -1,0 +1,8 @@
+MODULES=sncseq asyn ndsepics
+
+BASE=R7.0.6.1
+ASYN=R4-41
+SNCSEQ=R2-2-9
+NDSEPICS_REPOURL="https://github.com/pheest/nds-epics"
+NDSEPICS_DIRNAME="nds-epics"
+NDSEPICS_HOOK=.cache/nds-epics-master/.ci-local/NDS3_install.sh

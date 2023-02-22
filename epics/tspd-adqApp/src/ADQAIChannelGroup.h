@@ -12,7 +12,6 @@
 #include "ADQInfo.h"
 
 #include <mutex>
-#include <atomic>
 #include <nds3/nds.h>
 
 /** @file ADQAIChannelGroup.h
@@ -91,15 +90,15 @@ public:
     /** @fn ADQAIChannelGroup(const std::string& name, nds::Node& parentNode, ADQInterface*& adqInterface);
      * @brief ADQAIChannelGroup class constructor.
      * @param name a name with which this class will register its child node.
-     * @param parentNode a name of a parent node to which this class' node is a child.
+     * @param parentNode a name of a parent node to which the child node will connect to.
      * @param adqInterface a pointer to the ADQ API interface created in the ADQDevice class.
-     * @param adqCtrlUnit a pointer to the ADQ control unit that sets up and controls the ADQ devices.
      */
-    ADQAIChannelGroup(const std::string& name, nds::Node& parentNode, ADQInterface*& adqInterface, void* adqCtrlUnit);
+    ADQAIChannelGroup(const std::string& name, nds::Node& parentNode, 
+        ADQInterface* adqInterface, int32_t masterEnumeration, int32_t thisEnumeration, int32_t nextEnumeration);
     virtual ~ADQAIChannelGroup();
 
     /** @var m_node
-     * @brief ADQAIChannelGroup class node that connects to the device.
+     * @brief ADQAIChannelGroup class child node that connects to the root node.
      */
     nds::Port m_node;
 
@@ -148,10 +147,41 @@ public:
      */
     void setTrigMode(const timespec& pTimestamp, const int32_t& pValue);
 
+    /** @fn getExternTrigInputImpedance
+     * @brief Gets the trig input impedance.
+     */
+    void getExternTrigInputImpedance(timespec* pTimestamp, int32_t* pValue);
+
+    /** @fn setExternTrigInputImpedance
+     * @brief Sets the trig input impedance.
+     */
+    void setExternTrigInputImpedance(const timespec& pTimestamp, const int32_t& pValue);
+
     /** @fn getTrigMode
      * @brief Gets the trigger mode.
      */
     void getTrigMode(timespec* pTimestamp, int32_t* pValue);
+
+    /** @fn setMasterMode
+     * @brief Sets the master mode for daisy-chain triggering.
+     */
+    void setMasterMode(const timespec& pTimestamp, const int32_t& pValue);
+
+    /** @fn setMasterMode
+     * @brief Gets the master mode for daisy-chain triggering.
+     */
+    void getMasterMode(timespec* pTimestamp, int32_t* pValue);
+
+    /** @fn getTrigTimeStamp
+     * @brief Gets the trigger time stamp for the most recent record.
+     */
+    void getTrigTimeStamp(timespec* pTimestamp, std::vector<double>* pValue);
+
+    /** @fn getDaisyRecordStart
+     * @brief Gets the daisy time stamp(s) for the most recent record.
+     */
+    void getDaisyRecordStart(timespec* pTimestamp, std::vector<int32_t>* pValue);
+    void getDaisyTimeStamp(timespec* pTimestamp, std::vector<double>* pValue);
 
     /** @fn setDbsBypass
      * @brief Sets if the DBS settings is bypassed (1) or not (0).
@@ -378,6 +408,11 @@ public:
      */
     void getLevelTrigChan(timespec* pTimestamp, int32_t* pValue);
 
+    /** @fn setLevelTrigChanMask
+     * @brief Sets the Level trigger channel mask directly (bypassing setLevelTrigChan).
+     */
+    void setLevelTrigChanMask(const timespec& pTimestamp, const int32_t& pValue);
+
     /** @fn getLevelTrigChanMask
      * @brief Gets the Level trigger channel mask.
      */
@@ -423,11 +458,6 @@ public:
      */
     void getInternTrigHighSamp(timespec* pTimestamp, int32_t* pValue);
 
-    /** @fn setInternTrigLowSamp
-     * @brief Sets the Internal trigger low sample length.
-     */
-    void setInternTrigLowSamp(const timespec& pTimestamp, const int32_t& pValue);
-
     /** @fn getInternTrigLowSamp
      * @brief Gets the Internal trigger low sample length.
      */
@@ -453,10 +483,32 @@ public:
      */
     void getInternTrigEdge(timespec* pTimestamp, int32_t* pValue);
 
-    /** @fn getLogMsg
-     * @brief Gets the log messages.
+    /** @fn getEnumerationOrder
+     * @brief Gets the bus enumeration order of this module.
      */
-    void getLogMsg(timespec* pTimestamp, std::string* pValue);
+    void getMasterEnumeration(timespec* pTimestamp, int32_t* pValue);
+    void getThisEnumeration(timespec* pTimestamp, int32_t* pValue);
+    void getNextEnumeration(timespec* pTimestamp, int32_t* pValue);
+
+    /** @fn setDaisyPosition
+     * @brief Sets the daisy chain position of this module.
+     */
+    void setDaisyPosition(const timespec& pTimestamp, const std::vector<int32_t>& pValue);
+
+    /** @fn getDaisyPosition
+     * @brief Gets the daisy chain position of this module.
+     */
+    void getDaisyPosition(timespec* pTimestamp, std::vector<int32_t>* pValue);
+
+    /** @fn setsync_immediate
+     * @brief Sets the sync_immidate daisy chain attrribute of this module.
+     */
+    void setsync_immediate(const timespec& pTimestamp, const int32_t& pValue);
+
+    /** @fn getsync_immediate
+     * @brief Gets the sync_immidate daisy chain attrribute of this module.
+     */
+    void getsync_immediate(timespec* pTimestamp, int32_t* pValue);
 
     /** @fn onSwitchOn
      * @brief Sets the state machine to state ON.
@@ -487,7 +539,9 @@ public:
      * @brief Allows the state machine to switch to a new state.
      */
     bool allowChange(const nds::state_t currentLocal, const nds::state_t currentGlobal, const nds::state_t nextLocal);
-    
+ 
+    int allocateBuffers(short* (&daqDataBuffer)[CHANNEL_COUNT_MAX], streamingHeader_t* (&daqStreamHeaders)[CHANNEL_COUNT_MAX], short* (*daqLeftoverSamples)[CHANNEL_COUNT_MAX]);
+
     /** @fn daqTrigStream
      * @brief This method processes Triggered streaming data acquisition.
      */
@@ -509,14 +563,17 @@ public:
     void daqRawStream();
 
 private:
-    ADQInterface* m_adqInterface;
-    
-    nds::Thread m_daqThread;
-    bool m_stopDaq = true;
-    std::atomic_bool m_threadInterruptOnExit = { false };
+    int32_t m_masterEnumeration;
+    int32_t m_thisEnumeration;
+    int32_t m_nextEnumeration;
+    unsigned m_DaisyChainStatus;
+    std::vector<int32_t> m_daisyPosition;
+    bool m_daisyPositionChanged;
+    std::vector<ADQDaisyChainDeviceInformation> m_device_info;
+    bool m_sync_immediateChanged;
+    int m_sync_immediate;
 
     unsigned int m_chanCnt;
-    int m_adqType;
 
     int32_t m_daqMode;
     bool m_daqModeChanged;
@@ -551,6 +608,9 @@ private:
     bool m_trigHoldOffSampChanged;
     int32_t m_trigHoldOffSamp;
 
+    // We want to ensure that the clock source is set for every acquisition - even though it has not been changed.
+    // This is because the clock distribution could suffer an electronic glitch.
+    // In which case, we will get a warning that there's a problem.
     bool m_clockSrcChanged;
     int32_t m_clockSrc;
     bool m_clockRefOutChanged;
@@ -561,8 +621,11 @@ private:
     unsigned int m_chanInt;
     int32_t m_chanMask;   // Variations: 0x1 (A), 0x2 (B), 0x4 (C), 0x8 (D), 0x3 (AB), 0xC (CD), 0xF (ABCD)
 
-    int32_t m_trigMode;
+    int32_t m_trigMode;   // 0 - SW, 1 external, 2 level, 3 internal, 4 daisychain, 5 PXIe.
     bool m_trigModeChanged;
+
+    int32_t m_masterMode; // None, Master, Slave
+    bool m_masterModeChanged;
     int32_t m_swTrigEdge;
     bool m_swTrigEdgeChanged;
     int32_t m_levelTrigLvl;
@@ -570,26 +633,29 @@ private:
     int32_t m_levelTrigEdge;
     bool m_levelTrigEdgeChanged;
     int32_t m_levelTrigChan;
-    int32_t m_levelTrigChanMask;
     bool m_levelTrigChanChanged;
+    int32_t m_levelTrigChanMask;
+    bool m_levelTrigChanMaskChanged;
     int32_t m_externTrigDelay;
     bool m_externTrigDelayChanged;
     double m_externTrigThreshold;
     bool m_externTrigThresholdChanged;
     int32_t m_externTrigEdge;
     bool m_externTrigEdgeChanged;
+    int32_t m_externTrigInputImpedance;   // 0 - 50 Ohm, 1 high impedance.
+    bool m_externTrigInputImpedanceChanged;
     int32_t m_internTrigHighSamp;
     bool m_internTrigHighSampChanged;
     int32_t m_internTrigLowSamp;
-    bool m_internTrigLowSampChanged;
     int32_t m_internTrigFreq;
     bool m_internTrigFreqChanged;
+    std::vector<double> m_trigTimeStamp;
+    std::vector<int32_t> m_daisyRecordStart;
+    std::vector<double> m_daisyTimeStamp;
+    double m_PRETime;
     int32_t m_internTrigPeriod;
     int32_t m_internTrigEdge;
     bool m_internTrigEdgeChanged;
-
-    int32_t m_overVoltProtect;
-    bool m_overVoltProtectChanged;
 
     bool m_timeoutChanged;
     int32_t m_timeout;
@@ -602,8 +668,49 @@ private:
      * @param calledFromDaqThread a flag that prevents this function to be processed when set to false.
      */
     void commitChanges(bool calledFromDaqThread = false);
+    void commitDaqMode(struct timespec& now);
+    void commitPatternMode(struct timespec const& now);
+    void commitClockSource(struct timespec const& now);
+    void commitTriggerMode(struct timespec const& now);
+    void commitInternTrigHighSamp(struct timespec const& now);
+    void commitInternTrigFreqChanged(struct timespec const& now);
+    void commitExternTrigThreshold(struct timespec const& now);
+    void commitExternTrigEdge(struct timespec const& now);
+    void commitExternTrigImpedance(struct timespec const& now);
+    void commitClockRefOut(struct timespec const& now);
+    void commitLevelTrigEdge(struct timespec const& now);
+    void commitInternTrigEdge(struct timespec const& now);
+    void commitStreamTime(struct timespec const& now);
+    void commitSampleSkip(struct timespec& now);
+    void commitSampleDec(struct timespec& now);
+    void commitTriggerDelayOrHoldoff(struct timespec const& now);
+    void commitSWTrigEdge(struct timespec const& now);
+    void commitExternTrigDelay(struct timespec const& now);
+    void commitLevelTrigLvl(struct timespec const& now);
+    void commitLevelTrigChanMask(struct timespec const& now);
+    void commitDaisyChain(struct timespec const& now);
+    void commitSetupDBS(struct timespec const& now);
+    void commitActiveChan(struct timespec const& now);
+    void commitRecordCount(struct timespec& now);
+    void commitRecordCountCollect(struct timespec const& now);
 
-    nds::PVDelegateIn<std::string> m_logMsgPV;
+    void setTriggerIdleState();
+    int armTrigger();
+    int commitDaisyChainTriggerSource(struct timespec const& now);
+    void DaisyChainGetStatus(long Line);
+#ifdef TRACEDEBUG
+    void TraceOutWithTime(nds::Port& node, const char *pszFormat, ...);
+#else
+    void TraceOutWithTime(nds::Port& /*node*/, const char* /*pszFormat*/, ...) {
+    }
+#endif
+    static std::mutex m_StaticMutex;
+
+    nds::PVDelegateIn<int32_t> m_masterEnumerationPV;
+    nds::PVDelegateIn<int32_t> m_thisEnumerationPV;
+    nds::PVDelegateIn<int32_t> m_nextEnumerationPV;
+    nds::PVDelegateIn<std::vector<int32_t>> m_daisyPositionPV;
+    nds::PVDelegateIn<int32_t> m_sync_immediatePV;
     nds::PVDelegateIn<int32_t> m_daqModePV;
     nds::PVDelegateIn<int32_t> m_patternModePV;
     nds::PVDelegateIn<int32_t> m_chanActivePV;
@@ -617,12 +724,17 @@ private:
     nds::PVDelegateIn<int32_t> m_sampleCntPV;
     nds::PVDelegateIn<int32_t> m_sampleCntMaxPV;
     nds::PVDelegateIn<int32_t> m_sampleCntTotalPV;
+    nds::PVDelegateIn<int32_t> m_sampleSkipPV;
     nds::PVDelegateIn<int32_t> m_sampleDecPV;
     nds::PVDelegateIn<int32_t> m_preTrigSampPV;
     nds::PVDelegateIn<int32_t> m_trigHoldOffSampPV;
     nds::PVDelegateIn<int32_t> m_clockSrcPV;
     nds::PVDelegateIn<int32_t> m_clockRefOutPV;
     nds::PVDelegateIn<int32_t> m_trigModePV;
+    nds::PVDelegateIn<int32_t> m_masterModePV;
+    nds::PVDelegateIn<std::vector<double>>  m_trigTimeStampPV;
+    nds::PVDelegateIn<std::vector<int32_t>> m_daisyRecordStartPV;
+    nds::PVDelegateIn<std::vector<double>>  m_daisyTimeStampPV;
     nds::PVDelegateIn<int32_t> m_swTrigEdgePV;
     nds::PVDelegateIn<int32_t> m_levelTrigLvlPV;
     nds::PVDelegateIn<int32_t> m_levelTrigEdgePV;
@@ -631,6 +743,7 @@ private:
     nds::PVDelegateIn<int32_t> m_externTrigDelayPV;
     nds::PVDelegateIn<double> m_externTrigThresholdPV;
     nds::PVDelegateIn<int32_t> m_externTrigEdgePV;
+    nds::PVDelegateIn<int32_t> m_externTrigInputImpedancePV;
     nds::PVDelegateIn<int32_t> m_internTrigHighSampPV;
     nds::PVDelegateIn<int32_t> m_internTrigLowSampPV;
     nds::PVDelegateIn<int32_t> m_internTrigFreqPV;
@@ -638,33 +751,23 @@ private:
     nds::PVDelegateIn<int32_t> m_timeoutPV;
     nds::PVDelegateIn<double> m_streamTimePV;
 
-    /** @var m_daqRawDataBuffer
-     * @brief Data buffer. 
-     *
-     * Used only for Raw streaming data acquisition.
+    nds::Thread m_daqThread;
+    /** @def ADQNDS_MSG_ERRLOG_PV
+     * @brief Macro for informing the user about occured major failures and
+     * stopping data acquisition. Used in ADQAIChannelGroup methods.
+     * @param status status of the function that calls this macro.
+     * @param text input information message.
      */
-    short* m_daqRawDataBuffer;
-
-    /** @var m_daqDataBuffer[CHANNEL_COUNT_MAX]
-    * @brief Data buffer. 
-    *
-    * Used for Multi-Record, Triggered and Continuous streaming data acquisitions.
-    */
-    short* m_daqDataBuffer[CHANNEL_COUNT_MAX];
-
-    /** @var m_daqStreamHeaders[CHANNEL_COUNT_MAX]
-    * @brief Record header buffer. 
-    *
-    * Used only for Triggered streaming data acquisition.
-    */
-    streamingHeader_t* m_daqStreamHeaders[CHANNEL_COUNT_MAX];
-
-    /** @var m_daqLeftoverSamples[CHANNEL_COUNT_MAX]
-    * @brief Buffer for storing samples form unfinished records.
-    *
-    * Used only for Triggered streaming data acquisition.
-    */
-    short* m_daqLeftoverSamples[CHANNEL_COUNT_MAX];
+    struct TimeStamp_t {
+        timespec m_ClockTimeStamp;
+        double m_TrigTimeStamp;
+    };
+    void RecordTimeStampsAsCSV(std::vector<TimeStamp_t> const& TimeStampRecord, int32_t Record);
+    void ThrowException(std::string const& text);
+    void ADQNDS_MSG_ERRLOG_PV(int status, std::string const& text) {
+        if (!status)
+            ThrowException(text);
+    }
 };
 
 #endif /* ADQAICHANNELGROUP_H */

@@ -56,7 +56,7 @@
     </fg_gradient_color>
     <fill_level>0.0</fill_level>
     <font>
-      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -160,7 +160,7 @@ $(pv_value)</tooltip>
     <plot_area_background_color>
       <color red="255" green="255" blue="255" />
     </plot_area_background_color>
-    <pv_name>${ADQSerialNumber}:COM:CH:${ADQChannel}:DATA</pv_name>
+    <pv_name>${ADQSerialNumber}:COM:${ADQChannel}:DATA</pv_name>
     <pv_value />
     <rules />
     <scale_options>
@@ -172,7 +172,7 @@ $(pv_value)</tooltip>
     <show_legend>true</show_legend>
     <show_plot_area_border>false</show_plot_area_border>
     <show_toolbar>true</show_toolbar>
-    <title>Channel ${ADQChannel} Data</title>
+    <title>${ADQChannel} Data</title>
     <title_font>
       <fontdata fontName="Cantarell" height="14" style="1" pixels="false" />
     </title_font>
@@ -318,7 +318,7 @@ $(trace_0_y_pv_value)</tooltip>
     <name>Text Update_22</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>${ADQSerialNumber}:COM:CH:${ADQChannel}:INPUTRANGE-RB</pv_name>
+    <pv_name>${ADQSerialNumber}:COM:${ADQChannel}:INPUTRANGE-RB</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -375,7 +375,7 @@ $(pv_value)</tooltip>
     <name>Text Input_1</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>${ADQSerialNumber}:COM:CH:${ADQChannel}:INPUTRANGE</pv_name>
+    <pv_name>${ADQSerialNumber}:COM:${ADQChannel}:INPUTRANGE</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -432,7 +432,7 @@ $(pv_value)</tooltip>
     <name>Text Input_15</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>${ADQSerialNumber}:COM:CH:${ADQChannel}:DCBIAS</pv_name>
+    <pv_name>${ADQSerialNumber}:COM:${ADQChannel}:DCBIAS</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -484,7 +484,7 @@ $(pv_value)</tooltip>
     <name>Text Update_29</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>${ADQSerialNumber}:COM:CH:${ADQChannel}:DCBIAS-RB</pv_name>
+    <pv_name>${ADQSerialNumber}:COM:${ADQChannel}:DCBIAS-RB</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -576,7 +576,7 @@ $(pv_value)</tooltip>
     <name>Text Update_30</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>${ADQSerialNumber}:COM:CH:${ADQChannel}:CHANDEC-RB</pv_name>
+    <pv_name>${ADQSerialNumber}:COM:${ADQChannel}:CHANDEC-RB</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -633,7 +633,7 @@ $(pv_value)</tooltip>
     <name>Text Input_16</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>${ADQSerialNumber}:COM:CH:${ADQChannel}:CHANDEC</pv_name>
+    <pv_name>${ADQSerialNumber}:COM:${ADQChannel}:CHANDEC</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
