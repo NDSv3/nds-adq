@@ -14,16 +14,6 @@
 #                                         #
 # # # # # # # # # # # # # # # # # # # # # #
 
-record(waveform, "${PREFIX}-${ADQSN}:${GRP}:LOGMSG") {
-    field(DESC, "Message log")
-    field(FTVL, "CHAR")
-    field(NELM, "512")
-    field(SCAN, "I/O Intr")
-    field(DTYP, "asynInt8ArrayIn")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) LogMsg")
-    field(PINI, "YES")
-}
-
 record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:DAQMODE") {
     field(DESC, "Set DAQ mode")
     field(SCAN, "Passive")
@@ -36,7 +26,7 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:DAQMODE") {
     field(THVL, 3)
     field(THST, "Raw stream")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) DAQMode")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DAQMode")
     field(PINI, "YES")
 }
 
@@ -52,7 +42,7 @@ record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:DAQMODE-RB") {
     field(THVL, 3)
     field(THST, "Raw stream")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) DAQMode-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DAQMode-RB")
     field(PINI, "YES")
 }
 
@@ -67,8 +57,10 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:TRIGMODE") {
     field(TWST, "Level")
     field(THVL, 3)
     field(THST, "Internal")
+    field(FRVL, 4)
+    field(FRST, "Daisy chain")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) TrigMode")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) TrigMode")
     field(PINI, "YES")
 }
 
@@ -83,9 +75,127 @@ record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:TRIGMODE-RB") {
     field(TWST, "Level")
     field(THVL, 3)
     field(THST, "Internal")
+    field(FRVL, 4)
+    field(FRST, "Daisy chain")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) TrigMode-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) TrigMode-RB")
     field(PINI, "YES")
+}
+
+record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:MASTERMODE") {
+    field(DESC, "Master mode")
+    field(SCAN, "Passive")
+    field(ZRVL, 0)
+    field(ZRST, "None")
+    field(ONVL, 1)
+    field(ONST, "Master")
+    field(TWVL, 2)
+    field(TWST, "Slave")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) MasterMode")
+    field(PINI, "YES")
+}
+
+record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:MASTERMODE-RB") {
+    field(DESC, "Master mode Rdbk")
+    field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) MasterMode-RB")
+    field(ZRVL, 0)
+    field(ZRST, "None")
+    field(ONVL, 1)
+    field(ONST, "Master")
+    field(TWVL, 2)
+    field(TWST, "Slave")
+}
+
+record(waveform, "${PREFIX}-${ADQSN}:${GRP}:DAISYPOSITION") {
+    field(DESC, "Daisy chain position")
+    field(SCAN, "Passive")
+    field(PINI, "YES")
+    field(FTVL, "LONG")
+    field(DTYP, "asynInt32ArrayOut")
+    field(NELM, "10")
+    field(FTVL, "LONG")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DaisyPosition")
+}
+
+record(waveform, "${PREFIX}-${ADQSN}:${GRP}:DAISYPOSITION-RB") {
+    field(DESC, "Daisy chain position Rdbk")
+    field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32ArrayIn")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DaisyPosition-RB")
+    field(FTVL, "LONG")
+    field(NELM, "10")
+}
+
+record(longout, "${PREFIX}-${ADQSN}:${GRP}:SYNC_IMMEDIATE") {
+    field(DESC, "Daisy sync immediate")
+    field(SCAN, "Passive")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) sync_immediate")
+}
+
+record(longin, "${PREFIX}-${ADQSN}:${GRP}:SYNC_IMMEDIATE-RB") {
+    field(DESC, "Daisy sync immediate")
+    field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) sync_immediate-RB")
+}
+
+record(longin, "${PREFIX}-${ADQSN}:${GRP}:MASTERENUMERATION") {
+    field(DESC, "Bus enumeration index of module master")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) masterEnumeration")
+}
+
+record(longin, "${PREFIX}-${ADQSN}:${GRP}:THISENUMERATION") {
+    field(DESC, "Bus enumeration index of this module")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) thisEnumeration")
+}
+
+record(longin, "${PREFIX}-${ADQSN}:${GRP}:NEXTENUMERATION") {
+    field(DESC, "Bus enumeration index of the next module")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) nextEnumeration")
+}
+
+record(waveform, "${PREFIX}-${ADQSN}:${GRP}:TRIGTIMESTAMP") {
+    field(DESC, "Trigger time stamp")
+    field(SCAN, "I/O Intr")
+    field(DTYP, "asynFloat64ArrayIn")
+    field(FTVL, "DOUBLE")
+    field(NELM, "${NRECORDSCOLLECT=1}")
+    field(EGU,  "mS")
+    field(PRIO, "HIGH")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) TrigTimeStamp")
+}
+
+record(waveform, "${PREFIX}-${ADQSN}:${GRP}:DAISYRECORDSTART") {
+    field(DESC, "Daisychain record start")
+    field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32ArrayIn")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DaisyRecordStart")
+    field(EGU,  "Clock cycles")
+    # This is the number of modules in the chain * NRECORDSCOLLECT
+    field(NELM, "${NDAISYRECORDSCOLLECT=10}")
+    field(FTVL, "LONG")
+}
+
+record(waveform, "${PREFIX}-${ADQSN}:${GRP}:DAISYTIMESTAMP") {
+    field(DESC, "Daisychain master time stamp")
+    field(SCAN, "I/O Intr")
+    field(DTYP, "asynFloat64ArrayIn")
+    field(FTVL, "DOUBLE")
+    field(NELM, "${NRECORDSCOLLECT=1}")
+    field(EGU,  "mS")
+    field(PRIO, "HIGH")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DaisyTimeStamp")
 }
 
 record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:CHANACTIVE") {
@@ -106,7 +216,7 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:CHANACTIVE") {
     field(SXVL, 6)
     field(SXST, "A+B+C+D")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ChanActive")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ChanActive")
     field(PINI, "YES")
 }
 
@@ -128,7 +238,7 @@ record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:CHANACTIVE-RB") {
     field(SXVL, 6)
     field(SXST, "A+B+C+D")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ChanActive-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ChanActive-RB")
     field(PINI, "YES")
 }
 
@@ -136,7 +246,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:CHANMASK-RB") {
     field(DESC, "Channel mask Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ChanMask-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ChanMask-RB")
     field(PINI, "YES")
 }
 
@@ -146,7 +256,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:DBSBYPASS") {
     field(DRVH, "1")
     field(DRVL, "0")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) DBSBypass")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DBSBypass")
     field(PINI, "YES")
 }
 
@@ -154,7 +264,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:DBSBYPASS-RB") {
     field(DESC, "DBS settings Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) DBSBypass-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DBSBypass-RB")
     field(PINI, "YES")
 }
 
@@ -162,7 +272,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:DBSDC") {
     field(DESC, "DBS settings")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) DBSDC")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DBSDC")
     field(PINI, "YES")
 }
 
@@ -170,7 +280,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:DBSDC-RB") {
     field(DESC, "DBS settings Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) DBSDC-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DBSDC-RB")
     field(PINI, "YES")
 }
 
@@ -178,7 +288,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:DBSLOWSAT") {
     field(DESC, "DBS settings")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) DBSLowSat")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DBSLowSat")
     field(PINI, "YES")
 }
 
@@ -186,7 +296,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:DBSLOWSAT-RB") {
     field(DESC, "DBS settings Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) DBSLowSat-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DBSLowSat-RB")
     field(PINI, "YES")
 }
 
@@ -194,7 +304,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:DBSUPSAT") {
     field(DESC, "DBS settings")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) DBSUpSat")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DBSUpSat")
     field(PINI, "YES")
 }
 
@@ -202,7 +312,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:DBSUPSAT-RB") {
     field(DESC, "DBS settings Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) DBSUpSat-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) DBSUpSat-RB")
     field(PINI, "YES")
 }
 
@@ -218,7 +328,7 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:PATTERNMODE") {
     field(THVL, 3)
     field(THST, "Alter ups & downs")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) PatternMode")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) PatternMode")
     field(PINI, "YES")
 }
 
@@ -234,7 +344,7 @@ record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:PATTERNMODE-RB") {
     field(THVL, 3)
     field(THST, "Alter ups & downs")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) PatternMode-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) PatternMode-RB")
     field(PINI, "YES")
 }
 
@@ -242,7 +352,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:RECORDCNT") {
     field(DESC, "Number of records")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) RecordCnt")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) RecordCnt")
     field(PINI, "YES")
 }
 
@@ -250,7 +360,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:RECORDCNT-RB") {
     field(DESC, "Number of records Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) RecordCnt-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) RecordCnt-RB")
     field(PINI, "YES")
 }
 
@@ -258,7 +368,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:RECORDCNTCOLLECT") {
     field(DESC, "Records to collect")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) RecordCntCollect")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) RecordCntCollect")
     field(PINI, "YES")
 }
 
@@ -266,7 +376,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:RECORDCNTCOLLECT-RB") {
     field(DESC, "Records to collect Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) RecordCntCollect-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) RecordCntCollect-RB")
     field(PINI, "YES")
 }
 
@@ -274,7 +384,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:SAMPCNT") {
     field(DESC, "Number of samples")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) SampCnt")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) SampCnt")
     field(PINI, "YES")
 }
 
@@ -282,7 +392,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:SAMPCNT-RB") {
     field(DESC, "Number of samples Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) SampCnt-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) SampCnt-RB")
     field(PINI, "YES")
 }
 
@@ -290,7 +400,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:SAMPCNTTOTAL-RB") {
     field(DESC, "Number of records Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) SampCntTotal-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) SampCntTotal-RB")
     field(PINI, "YES")
 }
 
@@ -298,15 +408,29 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:SAMPCNTMAX-RB") {
     field(DESC, "Max number of samples Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) SampCntMax-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) SampCntMax-RB")
+}
+
+record(longout, "${PREFIX}-${ADQSN}:${GRP}:SAMPSKIP") {
+    field(DESC, "Samples to skip")
+    field(SCAN, "Passive")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) SampSkip")
     field(PINI, "YES")
+}
+
+record(longin, "${PREFIX}-${ADQSN}:${GRP}:SAMPSKIP-RB") {
+    field(DESC, "Samples to skip Rdbk")
+    field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) SampSkip-RB")
 }
 
 record(longout, "${PREFIX}-${ADQSN}:${GRP}:SAMPDEC") {
     field(DESC, "Sample decimation")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) SampDec")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) SampDec")
     field(PINI, "YES")
 }
 
@@ -314,7 +438,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:SAMPDEC-RB") {
     field(DESC, "Sample decimation Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) SampDec-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) SampDec-RB")
     field(PINI, "YES")
 }
 
@@ -322,7 +446,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:PRETRIGSAMP") {
     field(DESC, "Pre-trigger samples")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) PreTrigSamp")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) PreTrigSamp")
     field(PINI, "YES")
 }
 
@@ -330,7 +454,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:PRETRIGSAMP-RB") {
     field(DESC, "Pre-trigger samples Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) PreTrigSamp-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) PreTrigSamp-RB")
     field(PINI, "YES")
 }
 
@@ -338,7 +462,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:TRIGHOLDOFFSAMP") {
     field(DESC, "Hold-off samples")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) TrigHoldOffSamp")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) TrigHoldOffSamp")
     field(PINI, "YES")
 }
 
@@ -346,7 +470,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:TRIGHOLDOFFSAMP-RB") {
     field(DESC, "Hold-off samples Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) TrigHoldOffSamp-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) TrigHoldOffSamp-RB")
     field(PINI, "YES")
 }
 
@@ -354,7 +478,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:CLOCKSRC") {
     field(DESC, "Clock source")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ClockSrc")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ClockSrc")
     field(PINI, "YES")
 }
 
@@ -362,7 +486,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:CLOCKSRC-RB") {
     field(DESC, "Clock source Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ClockSrc-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ClockSrc-RB")
     field(PINI, "YES")
 }
 
@@ -370,7 +494,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:CLOCKREFOUT") {
     field(DESC, "Clock reference output signal")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ClockRefOut")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ClockRefOut")
     field(PINI, "YES")
 }
 
@@ -378,7 +502,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:CLOCKREFOUT-RB") {
     field(DESC, "Clock reference output signal Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ClockRefOut-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ClockRefOut-RB")
     field(PINI, "YES")
 }
 
@@ -392,7 +516,7 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:SWTRIGEDGE") {
     field(TWVL, 2)
     field(TWST, "Both edges")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) SWTrigEdge")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) SWTrigEdge")
     field(PINI, "YES")
 }
 
@@ -406,7 +530,7 @@ record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:SWTRIGEDGE-RB") {
     field(TWVL, 2)
     field(TWST, "Both edges")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) SWTrigEdge-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) SWTrigEdge-RB")
     field(PINI, "YES")
 }
 
@@ -414,7 +538,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:LEVELTRIGLVL") {
     field(DESC, "Level Trigger level")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) LevelTrigLvl")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) LevelTrigLvl")
     field(PINI, "YES")
 }
 
@@ -422,7 +546,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:LEVELTRIGLVL-RB") {
     field(DESC, "Level Trigger level Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) LevelTrigLvl-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) LevelTrigLvl-RB")
     field(PINI, "YES")
 }
 
@@ -436,7 +560,7 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:LEVELTRIGEDGE") {
     field(TWVL, 2)
     field(TWST, "Both edges")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) LevelTrigEdge")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) LevelTrigEdge")
     field(PINI, "YES")
 }
 
@@ -450,7 +574,7 @@ record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:LEVELTRIGEDGE-RB") {
     field(TWVL, 2)
     field(TWST, "Both edges")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) LevelTrigEdge-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) LevelTrigEdge-RB")
     field(PINI, "YES")
 }
 
@@ -458,43 +582,59 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:LEVELTRIGCHAN") {
     field(DESC, "Level Trigger channel")
     field(SCAN, "Passive")
     field(ZRVL, 0)
-    field(ZRST, "A")
+    field(ZRST, "None")
     field(ONVL, 1)
-    field(ONST, "B")
+    field(ONST, "A")
     field(TWVL, 2)
-    field(TWST, "C")
+    field(TWST, "B")
     field(THVL, 3)
-    field(THST, "D")
+    field(THST, "C")
     field(FRVL, 4)
-    field(FRST, "A+B")
+    field(FRST, "D")
     field(FVVL, 5)
-    field(FVST, "C+D")
+    field(FVST, "A+B")
     field(SXVL, 6)
-    field(SXST, "A+B+C+D")
+    field(SXST, "C+D")
+    field(SVVL, 7)
+    field(SVST, "A+B+C+D")
+    field(SVVL, 8)
+    field(SVST, "H")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) LevelTrigChan")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) LevelTrigChan")
     field(PINI, "YES")
 }
 
 record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:LEVELTRIGCHAN-RB") {
     field(DESC, "Level Trigger channel Rdbk")
     field(SCAN, "I/O Intr")
-    field(ZRVL, 0)
-    field(ZRST, "A")
-    field(ONVL, 1)
-    field(ONST, "B")
-    field(TWVL, 2)
-    field(TWST, "C")
-    field(THVL, 3)
-    field(THST, "D")
-    field(FRVL, 4)
-    field(FRST, "A+B")
-    field(FVVL, 5)
-    field(FVST, "C+D")
-    field(SXVL, 6)
-    field(SXST, "A+B+C+D")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) LevelTrigChan-RB")
+    field(ZRVL, 0)
+    field(ZRST, "None")
+    field(ONVL, 1)
+    field(ONST, "A")
+    field(TWVL, 2)
+    field(TWST, "B")
+    field(THVL, 3)
+    field(THST, "C")
+    field(FRVL, 4)
+    field(FRST, "D")
+    field(FVVL, 5)
+    field(FVST, "A+B")
+    field(SXVL, 6)
+    field(SXST, "C+D")
+    field(SVVL, 7)
+    field(SVST, "A+B+C+D")
+    field(SVVL, 8)
+    field(SVST, "H")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) LevelTrigChan-RB")
+    field(PINI, "YES")
+}
+
+record(longout, "${PREFIX}-${ADQSN}:${GRP}:LEVELTRIGCHANMASK") {
+    field(DESC, "Level Trigger chanmask direct set")
+    field(SCAN, "Passive")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) LevelTrigChanMask")
     field(PINI, "YES")
 }
 
@@ -502,7 +642,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:LEVELTRIGCHANMASK-RB") {
     field(DESC, "Level Trigger chanmask Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) LevelTrigChanMask-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) LevelTrigChanMask-RB")
     field(PINI, "YES")
 }
 
@@ -510,7 +650,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:EXTERNTRIGDELAY") {
     field(DESC, "External Trigger delay")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ExternTrigDelay")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ExternTrigDelay")
     field(PINI, "YES")
 }
 
@@ -518,27 +658,27 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:EXTERNTRIGDELAY-RB") {
     field(DESC, "External Trigger delay Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ExternTrigDelay-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ExternTrigDelay-RB")
     field(PINI, "YES")
 }
 
 record(ao, "${PREFIX}-${ADQSN}:${GRP}:EXTERNTRIGTHRESHOLD") {
     field(DESC, "External Trigger threshold")
-    field(EGU, "V")
+    field(EGU,  "V")
     field(PREC, "3")
     field(SCAN, "Passive")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ExternTrigThreshold")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ExternTrigThreshold")
     field(PINI, "YES")
 }
 
 record(ai, "${PREFIX}-${ADQSN}:${GRP}:EXTERNTRIGTHRESHOLD-RB") {
     field(DESC, "External Trigger threshold Rdbk")
-    field(EGU, "V")
+    field(EGU,  "V")
     field(PREC, "3")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ExternTrigThreshold-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ExternTrigThreshold-RB")
     field(PINI, "YES")
 }
 
@@ -552,7 +692,7 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:EXTERNTRIGEDGE") {
     field(TWVL, 2)
     field(TWST, "Both edges")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ExternTrigEdge")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ExternTrigEdge")
     field(PINI, "YES")
 }
 
@@ -566,7 +706,24 @@ record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:EXTERNTRIGEDGE-RB") {
     field(TWVL, 2)
     field(TWST, "Both edges")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ExternTrigEdge-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ExternTrigEdge-RB")
+    field(PINI, "YES")
+}
+
+record(longout, "${PREFIX}-${ADQSN}:${GRP}:EXTERNTRIGINPUTIMPEDANCE") {
+    field(DESC, "Trigger Input Impedance")
+    field(SCAN, "Passive")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ExternTrigInputImpedance")
+    field(PINI, "YES")
+}
+
+record(longin, "${PREFIX}-${ADQSN}:${GRP}:EXTERNTRIGINPUTIMPEDANCE-RB") {
+    field(DESC, "Trigger Input Impedance Rdbk")
+    field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ExternTrigInputImpedance-RB")
     field(PINI, "YES")
 }
 
@@ -574,7 +731,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:INTERNTRIGHIGHSAMP") {
     field(DESC, "Internal Trigger high samp length edge")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) InternTrigHighSamp")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) InternTrigHighSamp")
     field(PINI, "YES")
 }
 
@@ -582,15 +739,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:INTERNTRIGHIGHSAMP-RB") {
     field(DESC, "Internal Trigger high samp length Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) InternTrigHighSamp-RB")
-    field(PINI, "YES")
-}
-
-record(longout, "${PREFIX}-${ADQSN}:${GRP}:INTERNTRIGLOWSAMP") {
-    field(DESC, "Internal Trigger low samp length")
-    field(SCAN, "Passive")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) InternTrigLowSamp")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) InternTrigHighSamp-RB")
     field(PINI, "YES")
 }
 
@@ -598,25 +747,25 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:INTERNTRIGLOWSAMP-RB") {
     field(DESC, "Internal Trigger low samp length Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) InternTrigLowSamp-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) InternTrigLowSamp-RB")
     field(PINI, "YES")
 }
 
 record(longout, "${PREFIX}-${ADQSN}:${GRP}:INTERNTRIGFREQ") {
     field(DESC, "Internal Trigger frequency")
-    field(EGU, "Hz")
+    field(EGU,  "Hz")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) InternTrigFreq")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) InternTrigFreq")
     field(PINI, "YES")
 }
 
 record(longin, "${PREFIX}-${ADQSN}:${GRP}:INTERNTRIGFREQ-RB") {
     field(DESC, "Internal Trigger frequency Rdbk")
-    field(EGU, "Hz")
+    field(EGU,  "Hz")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) InternTrigFreq-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) InternTrigFreq-RB")
     field(PINI, "YES")
 }
 
@@ -630,7 +779,7 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:INTERNTRIGEDGE") {
     field(TWVL, 2)
     field(TWST, "Both edges")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) InternTrigEdge")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) InternTrigEdge")
     field(PINI, "YES")
 }
 
@@ -644,45 +793,45 @@ record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:INTERNTRIGEDGE-RB") {
     field(TWVL, 2)
     field(TWST, "Both edges")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) InternTrigEdge-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) InternTrigEdge-RB")
     field(PINI, "YES")
 }
 
 record(longout, "${PREFIX}-${ADQSN}:${GRP}:TIMEOUT") {
     field(DESC, "Timeout")
-    field(EGU, "ms")
+    field(EGU,  "ms")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) Timeout")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) Timeout")
     field(PINI, "YES")
 }
 
 record(longin, "${PREFIX}-${ADQSN}:${GRP}:TIMEOUT-RB") {
     field(DESC, "Timeout Rdbk")
-    field(EGU, "ms")
+    field(EGU,  "ms")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) Timeout-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) Timeout-RB")
     field(PINI, "YES")
 }
 
 record(ao, "${PREFIX}-${ADQSN}:${GRP}:STREAMTIME") {
     field(DESC, "Streaming time")
     field(SCAN, "Passive")
-    field(EGU, "s")
+    field(EGU,  "s")
     field(PREC, "3")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) StreamTime")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) StreamTime")
     field(PINI, "YES")
 }
 
 record(ai, "${PREFIX}-${ADQSN}:${GRP}:STREAMTIME-RB") {
     field(DESC, "Streaming time Rdbk")
     field(SCAN, "I/O Intr")
-    field(EGU, "s")
+    field(EGU,  "s")
     field(PREC, "3")
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) StreamTime-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) StreamTime-RB")
     field(PINI, "YES")
 }
 
@@ -714,7 +863,7 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:STATEMACHINE:SETSTATE") {
     field(EIVL, 8)
     field(EIST, "FAULT")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) StateMachine-setState")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) StateMachine-setState")
     field(PINI, "YES")
 }
 
@@ -741,6 +890,6 @@ record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:STATEMACHINE:GETSTATE") {
     field(EIST, "FAULT")
     field(EISV, "MAJOR")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) StateMachine-getState")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) StateMachine-getState")
     field(PINI, "YES")
 }

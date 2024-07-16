@@ -16,19 +16,34 @@
 
 record(ao, "${PREFIX}-${ADQSN}:${GRP}:${CH}:INPUTRANGE") {
     field(DESC, "${CH} input range")
-    field(EGU, "mVpp")
+    field(EGU,  "mVpp")
     field(SCAN, "Passive")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ${CH_NODE}-InputRange")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0)${CH}-InputRange")
     field(PINI, "YES")
 }
 
 record(ai, "${PREFIX}-${ADQSN}:${GRP}:${CH}:INPUTRANGE-RB") {
     field(DESC, "${CH} input range Rdbk")
-    field(EGU, "mVpp")
+    field(EGU,  "mVpp")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ${CH_NODE}-InputRange-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0)${CH}-InputRange-RB")
+}
+
+record(longout, "${PREFIX}-${ADQSN}:${GRP}:${CH}:INPUTIMPEDANCE") {
+    field(DESC, "${CH} Input Impedance")
+    field(SCAN, "Passive")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0)${CH}-InputImpedance")
+}
+
+record(longin, "${PREFIX}-${ADQSN}:${GRP}:${CH}:INPUTIMPEDANCE-RB") {
+    field(DESC, "${CH} Input Impedance Rdbk")
+    field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0)${CH}-InputImpedance-RB")
     field(PINI, "YES")
 }
 
@@ -36,7 +51,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:${CH}:DCBIAS") {
     field(DESC, "${CH} Adjusted BIAS")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ${CH_NODE}-DCBias")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0)${CH}-DCBias")
     field(PINI, "YES")
 }
 
@@ -44,7 +59,7 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:${CH}:DCBIAS-RB") {
     field(DESC, "${CH} Adjusted BIAS Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ${CH_NODE}-DCBias-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0)${CH}-DCBias-RB")
     field(PINI, "YES")
 }
 
@@ -52,7 +67,7 @@ record(longout, "${PREFIX}-${ADQSN}:${GRP}:${CH}:CHANDEC") {
     field(DESC, "${CH} decimation (for ADQ7-FWSDR)")
     field(SCAN, "Passive")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ${CH_NODE}-ChanDec")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ${CH}-ChanDec")
     field(PINI, "YES")
 }
 
@@ -60,17 +75,19 @@ record(longin, "${PREFIX}-${ADQSN}:${GRP}:${CH}:CHANDEC-RB") {
     field(DESC, "${CH} decimation (for ADQ7-FWSDR) Rdbk")
     field(SCAN, "I/O Intr")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ${CH_NODE}-ChanDec-RB")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0) ${CH}-ChanDec-RB")
     field(PINI, "YES")
 }
 
 record(waveform, "${PREFIX}-${ADQSN}:${GRP}:${CH}:DATA") {
     field(DESC, "Received data")
-    field(FTVL, "LONG")
-    field(NELM, "30000000")
+    field(FTVL, "SHORT")
+    # This is the maximum number samples in a record * NRECORDSCOLLECT
+    field(NELM, "${NSAMPLES=2000}")
+    field(PRIO, "HIGH")
     field(SCAN, "I/O Intr")
-    field(DTYP, "asynInt32ArrayIn")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ${CH_NODE}-Data")
+    field(DTYP, "asynInt16ArrayIn")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0)${CH}-Data")
 }
 
 # # # # # # # # # # # # # # # # # # # # # #
@@ -101,7 +118,7 @@ record(mbbo, "${PREFIX}-${ADQSN}:${GRP}:${CH}:STATEMACHINE:SETSTATE") {
     field(EIVL, 8)
     field(EIST, "FAULT")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ${CH_NODE}-StateMachine-setState")
+    field(OUT,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0)${CH}-StateMachine-setState")
     field(PINI, "YES")
 }
 
@@ -128,6 +145,6 @@ record(mbbi, "${PREFIX}-${ADQSN}:${GRP}:${CH}:STATEMACHINE:GETSTATE") {
     field(EIST, "FAULT")
     field(EISV, "MAJOR")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn(${PREFIX}-${ADQSN}-${GRP_NODE}, 0) ${CH_NODE}-StateMachine-getState")
+    field(INP,  "@asyn(${PREFIX}-${ADQSN}:${GRP}, 0)${CH}-StateMachine-getState")
     field(PINI, "YES")
 }

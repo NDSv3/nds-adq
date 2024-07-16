@@ -1,0 +1,20 @@
+file db/ADQInfo.template 
+{
+    pattern { INFO,  INFO_NELM }
+            { INFO,  32        }
+}
+
+file db/ADQAIChannelGroup.template 
+{
+    pattern { GRP }
+            { COM }
+}
+
+file db/ADQAIChannel.template 
+{
+    pattern { GRP,  CH  }
+            { COM,  CH0 }
+            { COM,  CH1 }
+            { COM,  CH2 }
+            { COM,  CH3 }
+}
